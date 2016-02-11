@@ -4,7 +4,7 @@
 $shortopts  = "";
 $shortopts .= "u::"; // Optional value
 $shortopts .= "p::"; // Optional value
-$shortopts .= "h:"; // Optional value
+$shortopts .= "h::"; // Optional value
 
 $longopts  = array(
  "file::",     // Optional value
@@ -21,6 +21,8 @@ $hp = 0;
 $user_name = "root";
 $pword = "123456";
 $hs_name = "localhost";
+$connect = "";
+$cid = "";
 
 //Collects command line Diretives
 $opts = getopt($shortopts,$longopts);
@@ -50,27 +52,18 @@ foreach($opts as $x => $x_value) {
     }  
 }
 
-//database connection details
-$connect = mysql_connect($hs_name,$user_name,$pword);
-if (!$connect) {
- die('Could not connect to MySQL: ' . mysql_error());
-}
-
-//Selects Database
-$cid =mysql_select_db('test',$connect);
-
 //Performs command line directive 
  if  ($create_value == 1){
-   create_tabel (); 
+   create_tabel ($hs_name,$user_name,$pword,$connect,$cid); 
    fwrite(STDOUT, "Just the users table has been created Successfully\n"); 
 } else if ($hp == 1){
    Dispay_help (); 
 } else if ($d_run == 1){
     global $csv_file;
-    Dry_run ($csv_file);
+    Dry_run ($csv_file,$hs_name,$user_name,$pword,$connect,$cid);
 } else {
 
-create_tabel ();
+create_tabel ($hs_name,$user_name,$pword,$connect,$cid);
 if (($handle = fopen($csv_file, "r")) !== FALSE) {
    fgetcsv($handle);   
    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
@@ -104,7 +97,19 @@ function format_name($names) {
     return preg_replace('/[^A-Za-z0-9-\']/', '', $names); // Removes special chars.
 }
 
-function create_tabel (){
+function create_tabel ($h_name,$u_name,$pwd,$connect,$cid){
+    global $cid;
+    global $connect;
+    //database connection details
+    $connect = mysql_connect($h_name,$u_name,$pwd);
+    if (!$connect) {
+    die('Could not connect to MySQL: ' . mysql_error());
+    }
+
+    //Selects Database
+    $cid =mysql_select_db('test',$connect);
+    
+    
     $sqlCreate = "CREATE TABLE IF NOT EXISTS `users` (
             `email` VARCHAR(255) NOT NULL,
             `name` VARCHAR(255) NOT NULL,
