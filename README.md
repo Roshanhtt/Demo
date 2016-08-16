@@ -1,4 +1,4 @@
-CSV file processing program
+An introduction to this CSV file processing program:
 
 •	This is a PHP program which can run from a Command Line application.
 
@@ -13,7 +13,7 @@ CSV file processing program
 •	It can detect MySQL data inserting restrictions. For instance, MySQL gives an error for names like O'Connor and O'Hare, but this program can bypass those errors and insert the name into the database.
 
 
-Assumptions
+Assumptions:
 
 •	Before running the program, please make sure the relevant CSV files with input data saved inside the source directory of the main program.
 
